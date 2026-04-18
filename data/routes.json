@@ -9,8 +9,8 @@
       "round_trip": false,
       "added_at": "2026-04-18T21:17:44.831278+00:00",
       "expires_at": "2026-05-02T21:17:44.831278+00:00",
-      "baseline_price": 668.0,
-      "last_price": 668.0,
+      "baseline_price": null,
+      "last_price": null,
       "currency": "USD"
     }
   ]
