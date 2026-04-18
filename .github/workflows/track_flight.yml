@@ -48,7 +48,9 @@ jobs:
           ROUND_TRIP: ${{ github.event.inputs.round_trip }}
           RETURN_DATE: ${{ github.event.inputs.return_date }}
           SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          PHONE_NUMBER: ${{ secrets.PHONE_NUMBER }}
+          GMAIL_ADDRESS: ${{ secrets.GMAIL_ADDRESS }}
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
         run: python src/add_route.py
 
       - name: Commit updated routes
