@@ -1,0 +1,58 @@
+name: Track New Flight
+
+on:
+  workflow_dispatch:
+    inputs:
+      from_airport:
+        description: "From Airport Code (e.g. BOS, JFK, ORD)"
+        required: true
+      to_airport:
+        description: "To Airport Code (e.g. LAX, LHR, DEL)"
+        required: true
+      departure_date:
+        description: "Departure Date (YYYY-MM-DD)"
+        required: true
+      round_trip:
+        description: "Round Trip?"
+        required: true
+        type: choice
+        options:
+          - "false"
+          - "true"
+        default: "false"
+      return_date:
+        description: "Return Date (YYYY-MM-DD) — required for round trip"
+        required: false
+
+jobs:
+  add-route:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Add route & fetch baseline
+        env:
+          FROM_AIRPORT: ${{ github.event.inputs.from_airport }}
+          TO_AIRPORT: ${{ github.event.inputs.to_airport }}
+          DEPARTURE_DATE: ${{ github.event.inputs.departure_date }}
+          ROUND_TRIP: ${{ github.event.inputs.round_trip }}
+          RETURN_DATE: ${{ github.event.inputs.return_date }}
+          SERPAPI_KEY: ${{ secrets.SERPAPI_KEY }}
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: python src/add_route.py
+
+      - name: Commit updated routes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "track: ${{ github.event.inputs.from_airport }} → ${{ github.event.inputs.to_airport }} (${{ github.event.inputs.departure_date }})"
+          file_pattern: data/routes.json
